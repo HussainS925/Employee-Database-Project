@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/styles.css">
+    <title>Manager Overview</title>
+</head>
+
+<header>
+    {% include 'top_bar.html' %}
+</header>
+
+<body>
+    <h1>Manager Overview</h1>
+    <div class="table_wrapper">
+        <table id="managersTable">
+            <thead>
+                <tr>
+                    <th>Department Name</th>
+                    <th>Department Number</th>
+                    <th>Manager Name</th>
+                    <th>Employee Count</th>
+                    <th>Total Hours</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if managers %}
+                    {% for mgr in managers %}
+                        <tr>
+                            <td>{{ mgr[0] }}</td>
+                            <td>{{ mgr[1] }}</td>
+                            <td>{{ mgr[2] }}</td>
+                            <td>{{ mgr[3] }}</td>
+                            <td>{{ mgr[4] }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="5">No manager data available.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

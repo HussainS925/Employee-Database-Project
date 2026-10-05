@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Employee Overview</title>
+</head>
+
+<header>
+    {% include 'top_bar.html' %}
+</header>
+
+<body>
+    <h1>Employee Overview</h1>
+
+    <form action="{{ url_for('home') }}" method="GET" class="filter_form">
+        <h3> Filters</h3>
+        <div class="f_form_group">
+            <div>
+                <label for="Fname">First Name</label>
+                <input type="text" id="Fname" name="fname" value="{{ request.args.get('fname', '') }}" style="width: 150px;">
+            </div>
+            <div>
+                <label for="MI">Middle I.</label>
+                <input type="text" id="MI" name="m_i" value="{{ request.args.get('m_i', '') }}" style="width: 60px;">
+            </div>
+            <div>
+                <label for="Lname">Last name</label>
+                <input type="text" id="Lname" name="lname" value="{{ request.args.get('lname', '') }}" style="width: 150px;">
+            </div>
+            <div>
+                <label for="Dname">Department:</label>
+                <select id="Dname" name="dname">
+                    <option value="" {% if request.args.get('dname', '') == '' %}selected{% endif %}>All</option>
+                    {% for dep in deps %}
+                    <option value="{{ dep[0] }}" {% if request.args.get('dname', '') == dep[0] %}selected{% endif %}>{{ dep[0] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit">Filter</button>
+        </div>
+    </form>
+
+    <div class="table_wrapper">
+        <table id="usersTable">
+            <thead>
+                <tr>
+                    <th>
+                        <a href="{{ url_for('home', sort_by='fname', direction=next_direction['fname'],
+                                    fname=request.args.get('fname', ''), m_i=request.args.get('m_i', ''), 
+                                    lname=request.args.get('lname', ''), dname=request.args.get('dname', '')) }}">
+                            F. Name {{ arrows['fname']}}
+                        </a>
+                    </th>
+                    <th>M. I.</th>
+                    <th>
+                        <a href="{{ url_for('home', sort_by='lname', direction=next_direction['lname'],
+                                    fname=request.args.get('fname', ''), m_i=request.args.get('m_i', ''), 
+                                    lname=request.args.get('lname', ''), dname=request.args.get('dname', '')) }}">
+                            L. Name {{ arrows['lname']}}
+                        </a>
+                    </th>
+                    <th>Department</th>
+                    <th>No. Dependents</th>
+                    <th>No. Projects</th>
+                    <th>
+                        <a href="{{ url_for('home', sort_by='thours', direction=next_direction['thours'], 
+                                    fname=request.args.get('fname', ''), m_i=request.args.get('m_i', ''), 
+                                    lname=request.args.get('lname', ''), dname=request.args.get('dname', '')) }}">
+                            Total Hours{{ arrows['thours']}}
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emp in employees %}
+                <tr>
+                    <td>{{ emp[0] }}</td>
+                    <td>{{ emp[1] }}</td>
+                    <td>{{ emp[2] }}</td>
+                    <td>{{ emp[3] }}</td>
+                    <td>{{ emp[4] }}</td>
+                    <td>{{ emp[5] }}</td>
+                    <td>{{ emp[6] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top: 16px; display: flex; gap: 16px; align-items: center;">
+        <form method="GET" action="{{ url_for('home_export_csv') }}">
+            <input type="hidden" name="sort_by" value="{{ request.args.get('sort_by', '') }}">
+            <input type="hidden" name="direction" value="{{ request.args.get('direction', 'asc') }}">
+            <input type="hidden" name="fname" value="{{ request.args.get('fname', '') }}">
+            <input type="hidden" name="m_i" value="{{ request.args.get('m_i', '') }}">
+            <input type="hidden" name="lname" value="{{ request.args.get('lname', '') }}">
+            <input type="hidden" name="dname" value="{{ request.args.get('dname', '') }}">
+            <button type="submit" class="export_btn">Export CSV</button>
+        </form>
+    </div>
+
+</body>
+
+</html>

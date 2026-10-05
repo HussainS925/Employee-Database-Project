@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Project Details (Admin)</title>
+</head>
+
+<header>
+    {% include 'top_bar.html' %}
+</header>
+
+<body>
+    <h1>Project Details</h1>
+    <h2>{{ project_name }}</h2>
+
+    <div class="table_wrapper">
+        <table id="projDetTable">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>M. Initial</th>
+                    <th>Last name</th>
+                    <th>Hours on Project</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emp in proj_employees %}
+                <tr>
+                    <td>{{ emp[0] }}</td>
+                    <td>{{ emp[1] }}</td>
+                    <td>{{ emp[2] }}</td>
+                    <td>{{ emp[3] }}</td>
+                </tr>
+                {% endfor %}
+                {% if proj_employees|length == 0 %}
+                <tr><td colspan="4">No employees assigned to this project.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Upsert form for admins -->
+    <form method="post" action="{{ url_for('proj_details', pname=project_name) }}" class="filter_form">
+        <input type="hidden" name="pname" value="{{ project_name }}">
+        <label for="essn">Employee:</label>
+        <select name="essn" id="essn" required>
+            {% for e in employees_all %}
+            <option value="{{ e[0] }}">{{ e[1] }}{% if e[2] %} {{ e[2] }}{% endif %} {{ e[3] }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="hours">Hours to add:</label>
+        <input type="number" name="hours" id="hours" step="0.1" min="0" required>
+
+        <button type="submit">Add Hours</button>
+    </form>
+</body>
+</html>

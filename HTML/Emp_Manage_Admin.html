@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Employee Management</title>
+
+</head>
+
+<header>
+    {% include 'top_bar.html' %}
+</header>
+
+<body>
+    <h1>Employee Management</h1>
+
+    <div id="Error_message" style="color:red;"></div>
+    <div id="Success_message" name="success_message" style="color:green;"> {{ Success_message }}</div>
+
+     <form action="{{ url_for('emp_management') }}" id="insert_form" method="POST" class="filter_form">
+        <h3> Add employee</h3>
+        <div class="f_form_group">
+            <div>
+                <label for="Fname">First Name</label>
+                <input type="text" id="Fname" name="fname" value="" style="width: 150px;">
+            </div>
+            <div>
+                <label for="MI">Middle I.</label>
+                <input type="text" id="MI" name="m_i" value="" style="width: 60px;">
+            </div>
+            <div>
+                <label for="Lname">Last name</label>
+                <input type="text" id="Lname" name="lname" value="" style="width: 150px;">
+            </div>
+            <div>
+                <label for="Ssn">SSN (9 digits)</label>
+                <input type="text" pattern="\d{9}" maxlength="9" inputmode="numeric" id="Ssn" name="ssn" value="" style="width: 150px;">
+            </div>
+            <div>
+                <label for="Address">Address</label>
+                <input type="text" id="Address" name="address" value="" style="width: 200px;">
+            </div>
+            <div>
+                <label for="Sex">Sex</label>
+                <select id="Sex" name="sex" style="width: 60px;">
+                    <option value="M" >M</option>
+                    <option value="F" >F</option>
+                </select>
+            </div>
+            <div>
+                <label for="Salary">Salary</label>
+                <input type="number" id="Salary" name="salary" value="" style="width: 150px;">
+            </div>
+            <div>
+                <label for="Sup_ssn">Super SSN </label>
+                <select id="Sup_ssn" name="sup_ssn">
+                    <option value="" ></option>
+                    {% for emp in employees %}
+                    <option value="{{ emp[3] }}">{{ emp[3] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="Dname">Department</label>
+                <select id="Dname" name="dname">
+                    <!-- Value of Department is their Dno.-->
+                    {% for dep in deps %}
+                    <option value="{{ dep[1] }}" >{{ dep[0] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="Bdate">Birthday</label>
+                <input type="date" id="Bdate" name="bdate" style="width: 150px;">
+            </div>
+            <div>
+                <label for="Empdate">Employee Date</label>
+                <input type="date" id="Empdate" name="empdate" style="width: 150px;">
+            </div>
+
+            <!-- hidden value so submit in js knows which button is pressed-->
+            <input type="hidden" id="Type" name="type" value="add">
+
+            <button type="submit" name="button" value="add">Add</button>
+        </div>
+    </form>
+
+    <form action="{{ url_for('emp_management') }}" id="edit_form" method="POST" class="filter_form">
+        <h3> Edit employee</h3>
+        <div class="f_form_group">
+            <div>
+                <label for="Employee">Employee:</label>
+
+                <!-- The vale of the employee is their SSN-->
+                <select id="Employee" name="employee">
+                    <option value="" data-addr="" 
+                            data-sal="" data-dep =""></option>
+                    {% for emp in employees %}
+                    <option value="{{ emp[3] }}" data-addr="{{ emp[4] }}" 
+                            data-sal="{{ emp[5] }}" data-dep ="{{ emp[6] }}">
+                        {{ ' '.join([emp[0], emp[1], emp[2]]) }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="View_ssn">SSN </label>
+                <input type="text" id="View_ssn" name="view_ssn"  style="width: 150px;" readonly>
+            </div>
+ 
+            <div>
+                <label for="Edit_Add">Address</label>
+                <input type="text" id="Edit_Add" name="edit_add" value="" style="width: 200px;">
+            </div>
+
+            <div>
+                <label for="Edit_salary">Salary</label>
+                <input type="number" id="Edit_salary" name="edit_salary" value="" style="width: 150px;">
+            </div>
+
+            <div>
+                <label for="Edit_dep">Department</label>
+                <select id="Edit_dep" name="edit_dep">
+                    <!-- Value of Department is their Dno.-->
+                    {% for dep in deps %}
+                    <option value="{{ dep[1] }}" >{{ dep[0] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- hidden value so submit in js knows which button is pressed-->
+            <input type="hidden" id="Type_edit" name="type" value="update">
+           
+            <button type="submit" name="button" value="update">Update</button>
+        </div>
+    </form>
+
+    <form action="{{ url_for('emp_management') }}" id="del_form" method="POST" class="filter_form">
+        <h3> Delete employee</h3>
+        <div class="f_form_group">
+            <div>
+                <label for="Del_employee">Employee:</label>
+
+                <!-- The vale of the employee (emp[3]) is their SSN-->
+                <select id="Del_Employee" name="del_employee">
+                    <option value="" ></option>
+                    {% for emp in employees %}
+                    <option value="{{ emp[3] }}" >{{ ' '.join([emp[0], emp[1], emp[2]]) }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- hidden value so submit in js knows which button is pressed-->
+            <input type="hidden" id="Type_del" name="type" value="delete">
+           
+            <button type="submit" name="button" value="delete">Delete</button>
+        </div>
+    </form>
+
+    <script>
+    document.getElementById('Empdate').value = 
+        new Date().toISOString().split('T')[0];
+    
+    const employeeSelect = document.getElementById("Employee");
+    const ssn_view = document.getElementById("View_ssn");
+    const edit_addr = document.getElementById("Edit_Add");
+    const edit_sal = document.getElementById("Edit_salary");
+    const edit_dep = document.getElementById("Edit_dep");
+
+    employeeSelect.addEventListener("change", (event) => {
+        selected = event.target.options[event.target.selectedIndex];
+
+        ssn_view.value = event.target.value;
+        edit_addr.value = selected.dataset.addr;
+        edit_sal.value = selected.dataset.sal;
+        edit_dep.value = selected.dataset.dep;
+    });
+    </script>
+    <script src="{{ url_for('static', filename='emp_validate.js') }}"></script>
+    
+</body>
+
+</html>

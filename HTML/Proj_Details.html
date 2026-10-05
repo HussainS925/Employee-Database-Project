@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Project Details</title>
+</head>
+
+<header>
+    {% include 'top_bar.html' %}
+</header>
+
+<body>
+    <h1>Project Details</h1>
+    <h2> {{ project_name }}</h2>
+
+    <div class="table_wrapper">
+        <table id="projDetTable">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>M. Initial</th>
+                    <th>Last name</th>
+                    <th>Hours on Project</th>
+                    <th>% of Hours Worked</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emp in proj_employees %}
+                <tr>
+                    <td>{{ emp[0] }}</td>
+                    <td>{{ emp[1] }}</td>
+                    <td>{{ emp[2] }}</td>
+                    <td>{{ emp[3] }}</td>
+                    <td>{{ emp[4] }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p>Average Hours on Project: {{ "%.2f"|format(avg_hours) }}</p>
+    </div>
+</body>
+
+</html>

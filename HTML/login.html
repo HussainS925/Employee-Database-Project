@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Login</title>
+</head>
+
+<body>
+    <h1 style="margin-top: 10vh">Welcome to Project Viewer</h1>
+
+    <form action="/login" method="post" id="loginForm" class="login_form">
+        <h2>Login to Your Account</h2>
+        
+        <div>
+            <label for="loginUsername">Username:</label>
+            <input type="text" id="loginUsername" name="username" required>
+        </div>
+
+        <div>
+            <label for="loginPassword">Password:</label>
+            <input type="password" id="loginPassword" name="password" required> 
+            
+        </div >
+            
+        <div class="pass_checkbox">
+            <input type="checkbox" id="toggleLoginPassword"> 
+            <label for="toggleLoginPassword">Show Password</label>
+        </div>
+
+        <button type="submit">Login</button>
+
+        <div class = "incorrect_login">
+            {% if error %}
+                <p style="color: red;">{{ error }}</p>
+            {% endif %}
+    </form>
+
+    <script>
+        const checkbox = document.getElementById("toggleLoginPassword");
+        const passwordInput = document.getElementById("loginPassword");
+
+        if (checkbox && passwordInput) {
+        checkbox.addEventListener("change", function () {
+            if (this.checked) {
+                passwordInput.type = "text";
+            } else {
+                passwordInput.type = "password";
+            }
+        });
+    }
+    </script>
+</body>
+
+</html>
